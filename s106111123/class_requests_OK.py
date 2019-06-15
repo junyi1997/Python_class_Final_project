@@ -2,9 +2,6 @@
 import tkinter as tk
 import datetime
 from PIL import Image,ImageTk
-import firebase_admin
-from firebase_admin import credentials
-from firebase_admin import firestore
 import requests #產生HTTP的請求
 from bs4 import BeautifulSoup
 
@@ -17,12 +14,7 @@ class Myrequests(object):
         self.total=""
         self.t="微軟正黑體"
         """Constructor"""
-        self.win = tk.Tk()
-        self.win.geometry("100x100")
-        self.win.title("Main frame")
-        
-        #圖片呼叫
-        self.win.title("PDMS_開始畫面")
+
 #        but_Log=tk.Button(self.win, command=lambda:self.openFrame()) 
 #        but_Log.place(x=0,y=0,width=40,height=40)
         self.url=""
@@ -42,70 +34,6 @@ class Myrequests(object):
                 '雙魚座': ['http://astro.click108.com.tw/daily_11.php?iAcDay=','&iAstro=11'],
                 '牡羊座': ['http://astro.click108.com.tw/daily_0.php?iAcDay=','&iAstro=0']
                 }
-        self.openFrame()
-        self.win.mainloop()
-        
-    def my_main(self,vvv):
-        self.T.config(state='normal')#智能打開
-        self.T.delete(1.0,tk.END)#清空text
-        self.T.image_create(tk.END, image=self.my_picture[vvv])#圖片
-#        print("vvv",vvv)
-        #vvv星座名稱
-        self.url=vvv
-#        print(self.my_URL[self.url][0]+self.now_time[0]+self.my_URL[self.url][1])
-        self.new_url=self.my_URL[self.url][0]+self.now_time[0]+self.my_URL[self.url][1]
-        self.set_requests()
-   
-    def set_requests(self): 
-    
-        r=requests.get(self.new_url)
-        r.encoding='utf8'
-        #今日星座解析
-        soup = BeautifulSoup(r.text,"html.parser")
-        set_constellation = soup.select('div.TODAY_CONTENT h3')#print(type(set_constellation))
-        set_constellation = str(set_constellation).strip("[<h3></h3>]")#print("結果：",set_constellation,"\n")
-        set_overall_content = soup.select('div.TODAY_CONTENT p')
-        set_overal2_content = soup.select('div.TODAY_CONTENT h3')
-        set_Today_Word = soup.select('div.TODAY_WORD')
-        
-        for i in set_overal2_content:
-            title_temp=i.text
-        #print(title_temp)
-        for temp in set_Today_Word:
-            Today_Word = temp.text
-            Today_Word=Today_Word.strip("\n")
-        #print(Today_Word)
-            
-        Today_Lucky =[]
-        set_Today_Lucky = soup.select('div.TODAY_LUCKY h4')
-        for temp in set_Today_Lucky:
-            Today_Lucky.append(temp.text)
-         #print(Today_Lucky)#數字、顏色、方位、時間、星座
-         #print("整體運勢：",set_overall_content[0].text,'\n',set_overall_content[1].text)
-         #print("愛情運勢：",set_overall_content[2].text,'\n',set_overall_content[3].text)
-         #print("事業運勢：",set_overall_content[4].text,'\n',set_overall_content[5].text)
-         #print("財運運勢：",set_overall_content[6].text,'\n',set_overall_content[7].text,'\n\n')
-         #print("{:}　　　　　　　　　　　　{:}　　　　　　　　　　　　幸運數字：{:}\n\n　　　　　　　　　　　　幸運顏色：{:}\n\n　　　　　　　　　　　　開運方位：{:}\n\n　　　　　　　　　　　　今日吉時：{:}\n\n　　　　　　　　　　　　幸運星座：{:}\n\n整體運勢：{:}\n\n愛情運勢：{:}\n\n事業運勢：{:}\n\n財運運勢：{:}".format(123,Today_Word,Today_Lucky[0],Today_Lucky[1],Today_Lucky[2],Today_Lucky[3],Today_Lucky[4],set_overall_content[0].text+'\n\n　　'+set_overall_content[1].text,set_overall_content[2].text+'\n\n　　'+set_overall_content[3].text,set_overall_content[4].text+'\n\n　　'+set_overall_content[5].text,set_overall_content[6].text+'\n\n　　'+set_overall_content[7].text))
-        
-        self.total="{:}\n\n今日短評：{:}\n\n幸運數字：{:}\n\n幸運顏色：{:}\n\n開運方位：{:}\n\n今日吉時：{:}\n\n幸運星座：{:}\n\n整體運勢：{:}\n\n愛情運勢：{:}\n\n事業運勢：{:}\n\n財運運勢：{:}\n".format(title_temp,Today_Word,Today_Lucky[0],Today_Lucky[1],Today_Lucky[2],Today_Lucky[3],Today_Lucky[4],set_overall_content[0].text+'\n\n　　'+set_overall_content[1].text,set_overall_content[2].text+'\n\n　　'+set_overall_content[3].text,set_overall_content[4].text+'\n\n　　'+set_overall_content[5].text,set_overall_content[6].text+'\n\n　　'+set_overall_content[7].text)
-        self.T.insert(tk.END,self.total)
-        self.T.config(state=tk.DISABLED)
-        
-    #---------------------------------------------------------------------
-    def centerwin(self,wnd, win_w, win_h):#畫面置中
-        self.left = (self.wnd.winfo_screenwidth()-win_w)//2
-        self.top = (self.wnd.winfo_screenheight()-win_h)//2
-        self.wnd.geometry("{:}x{:}+{:}+{:}".format(win_w,win_h,self.left,self.top))
-        
-    #----------------------------------------------------------------------
-    def hide(self):
-        """"""
-        self.win.withdraw()
-    #----------------------------------------------------------------------
-    def openFrame(self):
-        
-        """"""
-        self.hide()
         self.wnd=tk.Toplevel()
         self.centerwin(self.wnd,1020,400)
 #        self.wnd.geometry("1020x400")
@@ -222,18 +150,60 @@ class Myrequests(object):
         self.scrollb.config(command=self.T.yview)
         self.T.config(yscrollcommand = self.scrollb.set)
         #---------------------------------------------------------------------------------------------------
- 
-    #----------------------------------------------------------------------
-    def onCloseOtherFrame(self, otherFrame):
-        """"""
-        self.a=0
-        otherFrame.destroy()
-        self.show()
-    #----------------------------------------------------------------------
-    def show(self):
-        """"""
-        self.win.update()
-        self.win.deiconify()
+        self.wnd.mainloop()
+        
+    def my_main(self,vvv):
+        self.T.config(state='normal')#智能打開
+        self.T.delete(1.0,tk.END)#清空text
+        self.T.image_create(tk.END, image=self.my_picture[vvv])#圖片
+#        print("vvv",vvv)
+        #vvv星座名稱
+        self.url=vvv
+#        print(self.my_URL[self.url][0]+self.now_time[0]+self.my_URL[self.url][1])
+        self.new_url=self.my_URL[self.url][0]+self.now_time[0]+self.my_URL[self.url][1]
+        self.set_requests()
+   
+    def set_requests(self): 
+    
+        r=requests.get(self.new_url)
+        r.encoding='utf8'
+        #今日星座解析
+        soup = BeautifulSoup(r.text,"html.parser")
+        set_constellation = soup.select('div.TODAY_CONTENT h3')#print(type(set_constellation))
+        set_constellation = str(set_constellation).strip("[<h3></h3>]")#print("結果：",set_constellation,"\n")
+        set_overall_content = soup.select('div.TODAY_CONTENT p')
+        set_overal2_content = soup.select('div.TODAY_CONTENT h3')
+        set_Today_Word = soup.select('div.TODAY_WORD')
+        
+        for i in set_overal2_content:
+            title_temp=i.text
+        #print(title_temp)
+        for temp in set_Today_Word:
+            Today_Word = temp.text
+            Today_Word=Today_Word.strip("\n")
+        #print(Today_Word)
+            
+        Today_Lucky =[]
+        set_Today_Lucky = soup.select('div.TODAY_LUCKY h4')
+        for temp in set_Today_Lucky:
+            Today_Lucky.append(temp.text)
+         #print(Today_Lucky)#數字、顏色、方位、時間、星座
+         #print("整體運勢：",set_overall_content[0].text,'\n',set_overall_content[1].text)
+         #print("愛情運勢：",set_overall_content[2].text,'\n',set_overall_content[3].text)
+         #print("事業運勢：",set_overall_content[4].text,'\n',set_overall_content[5].text)
+         #print("財運運勢：",set_overall_content[6].text,'\n',set_overall_content[7].text,'\n\n')
+         #print("{:}　　　　　　　　　　　　{:}　　　　　　　　　　　　幸運數字：{:}\n\n　　　　　　　　　　　　幸運顏色：{:}\n\n　　　　　　　　　　　　開運方位：{:}\n\n　　　　　　　　　　　　今日吉時：{:}\n\n　　　　　　　　　　　　幸運星座：{:}\n\n整體運勢：{:}\n\n愛情運勢：{:}\n\n事業運勢：{:}\n\n財運運勢：{:}".format(123,Today_Word,Today_Lucky[0],Today_Lucky[1],Today_Lucky[2],Today_Lucky[3],Today_Lucky[4],set_overall_content[0].text+'\n\n　　'+set_overall_content[1].text,set_overall_content[2].text+'\n\n　　'+set_overall_content[3].text,set_overall_content[4].text+'\n\n　　'+set_overall_content[5].text,set_overall_content[6].text+'\n\n　　'+set_overall_content[7].text))
+        
+        self.total="{:}\n\n今日短評：{:}\n\n幸運數字：{:}\n\n幸運顏色：{:}\n\n開運方位：{:}\n\n今日吉時：{:}\n\n幸運星座：{:}\n\n整體運勢：{:}\n\n愛情運勢：{:}\n\n事業運勢：{:}\n\n財運運勢：{:}\n".format(title_temp,Today_Word,Today_Lucky[0],Today_Lucky[1],Today_Lucky[2],Today_Lucky[3],Today_Lucky[4],set_overall_content[0].text+'\n\n　　'+set_overall_content[1].text,set_overall_content[2].text+'\n\n　　'+set_overall_content[3].text,set_overall_content[4].text+'\n\n　　'+set_overall_content[5].text,set_overall_content[6].text+'\n\n　　'+set_overall_content[7].text)
+        self.T.insert(tk.END,self.total)
+        self.T.config(state=tk.DISABLED)
+        
+    #---------------------------------------------------------------------
+    def centerwin(self,wnd, win_w, win_h):#畫面置中
+        self.left = (self.wnd.winfo_screenwidth()-win_w)//2
+        self.top = (self.wnd.winfo_screenheight()-win_h)//2
+        self.wnd.geometry("{:}x{:}+{:}+{:}".format(win_w,win_h,self.left,self.top))
+
 #----------------------------------------------------------------------
 if __name__ == "__main__":
     app = Myrequests() 

@@ -1,0 +1,7 @@
+pip install firebase-admin google-cloud-firestore
+
+pip install opencv-python
+
+pip install gTTS
+
+pip install pygame

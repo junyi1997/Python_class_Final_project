@@ -4,7 +4,7 @@ import time
 import requests
 
 base ='https://westcentralus.api.cognitive.microsoft.com/face/v1.0'    # 端點
-key = '16b209ef30ca4f56a355332e2ed69df1'     # 你的金鑰
+key = '6f9af40fc8924f9fa3fe8795905a057b'     # 你的金鑰
 headers_stream = { }   # stream 請求標頭
 headers_json = { }     # json 請求標頭
 headers = { }          # GET 的請求標頭

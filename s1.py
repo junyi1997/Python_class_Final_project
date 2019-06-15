@@ -2,16 +2,12 @@ import tkinter as tk
 import tkinter.messagebox as messagebox
 import pickle
 from PIL import Image,ImageTk
-
-# filebase引用必要套件
-#import firebase_admin
-#from firebase_admin import credentials
-#from firebase_admin import firestore
-
-from s106111123.class_Foreign_exchange_Ok import ForeignMyApp
+import BotSpeak
+from s106111123.class_Foreign_exchange_OK import MyForeignExchange
 from s106111123.class_invoice_OK import invoiceMyApp
-from s106111123.class_weather import weatherMyApp
+from s106111123.class_weather_OK import Myweather
 from s106111123.class_requests_OK import Myrequests
+from s106111142.memo import Login
 import face_pyhon.face as face
 ########################################################################
 class MyApp(object):
@@ -57,7 +53,9 @@ class MyApp(object):
         #進入登入畫面
         but_Log=tk.Button(self.win,image=self.photo_Login, command=lambda:self.password()) 
         but_Log.place(x=200,y=570)
+        BotSpeak.speak("歡迎來到PDMS個人資料管理系統  請點選下方按鍵登入")
         self.win.mainloop()
+        BotSpeak.speak("掰掰") 
     #----------------------------------------------------------------------
     def chooseclear(self):
         self.win_ch = tk.Toplevel()
@@ -76,13 +74,15 @@ class MyApp(object):
         #背景
         canvas.create_image(130,10, image=self.win_ch.bg06)
         def print_selection():
+            msg="你所選擇要進入的是{:}系統".format(var.get())
+            BotSpeak.speak(msg)
             Ans=tk.messagebox.askyesno(title='小提醒', message='你是否選擇要進入' + var.get()+"的頁面？")
             if Ans:
                 if var.get()=="備忘錄":
-                    self.openFrame1()
+                    Login()
                     
                 elif var.get()=="行事曆":
-                    self.openFrame2()
+                    pass
                     
                 elif var.get()=="生活小助手":
                     self.openFrame3() 
@@ -128,7 +128,8 @@ class MyApp(object):
                 exist_usr_info[nn] = np
                 with open('usrs_info.pickle', 'wb') as usr_file:
                     pickle.dump(exist_usr_info, usr_file)
-                tk.messagebox.showinfo('Welcome', '恭喜你已成功更改密碼！')
+#                tk.messagebox.showinfo('Welcome', '恭喜你已成功更改密碼！')
+                BotSpeak.speak("恭喜你已成功更改密碼！")
                 win_pw_sign_up.destroy()
         win_pw_sign_up = tk.Toplevel()
         win_pw_sign_up.geometry("500x200+130+130")
@@ -167,10 +168,10 @@ class MyApp(object):
             if self.A==0:
                 self.A=1
                 buttontext.set('↑')   
-                
+                BotSpeak.speak("輸入方塊的焦點在重複輸入密碼")
             elif self.A==1:
                 self.A=0 
-                  
+                BotSpeak.speak("輸入方塊的焦點在輸入密碼")  
                 buttontext.set('↓')   
         def btn01():
               
@@ -259,18 +260,22 @@ class MyApp(object):
         btn_login.place(x=420, y=10,width=40,height=40)
     #---------------------------------------------------------------------- 
     def face_ID(self):
-        print("準備臉部辨識中...")
+#        print("準備臉部辨識中...")
+        BotSpeak.speak("準備臉部辨識中") 
         self.Account=face.my_main()
         print("Account",self.Account)
         with open('usrs_info.pickle', 'rb') as usr_file:
             usrs_info = pickle.load(usr_file)
         if self.Account in usrs_info:
-            tk.messagebox.showinfo(title='歡迎', message='歡迎來到PDMS！ ' + self.Account)
+#            tk.messagebox.showinfo(title='歡迎', message='歡迎來到PDMS！ ' + self.Account)
+            msg="歡迎來到PDMS{:}".format(self.Account)
+            BotSpeak.speak(msg) 
             self.win_pw.destroy()              
             self.chooseclear()
         
     #----------------------------------------------------------------------
     def password(self):
+        BotSpeak.speak("請輸入密碼或者點選#鍵進行臉部辨識") 
         self.hide()
         self.win_pw = tk.Toplevel()
         self.win_pw.title('root')
@@ -314,7 +319,9 @@ class MyApp(object):
             if usr_name in usrs_info:
                 if usr_pwd == usrs_info[usr_name]:
                     self.Account=usr_name
-                    tk.messagebox.showinfo(title='歡迎', message='歡迎來到PDMS！ ' + usr_name)
+#                    tk.messagebox.showinfo(title='歡迎', message='歡迎來到PDMS！ ' + usr_name)
+                    msg="歡迎來到PDMS！ {:}".format(str(usr_name))
+                    BotSpeak.speak(msg)
                     #cleardata = tk.messagebox.askyesno('Welcome',
                     #                '是否要清空資料庫？')
 
@@ -323,10 +330,12 @@ class MyApp(object):
                     self.chooseclear()
                              
                 else:
-                    tk.messagebox.showerror(message='密碼輸入錯誤')
+#                    tk.messagebox.showerror(message='密碼輸入錯誤')
+                    BotSpeak.speak("密碼輸入錯誤") 
 
             else:
-                tk.messagebox.showerror(message='查無此人')
+#                tk.messagebox.showerror(message='查無此人')
+                BotSpeak.speak("查無此人") 
                 '''
                 is_sign_up = tk.messagebox.askyesno('Welcome',
                                     '無使用者資料，是否創建一個？')
@@ -419,82 +428,7 @@ class MyApp(object):
         handler = lambda: self.onCloseOtherFrame(self.win_HOW)
         btn = tk.Button(self.win_HOW, text="continue",command=handler,font= ('Noto Sans Mono CJK TC Regular',20),fg='white',bg='Maroon',width=8)
         btn.place(x=330,y=380)
-         
-    #----------------------------------------------------------------------
-    def openFrame1(self):
-        """"""
-        #備忘錄
-
-        self.hide()
-        self.win_main1 = tk.Toplevel()
-        left=(self.win_main1.winfo_screenwidth()-600)//2
-        top=(self.win_main1.winfo_screenheight()-700)//2
-        self.win_main1.geometry("{:}x{:}+{:}+{:}".format(600,700,left,top))
-        self.win_main1.geometry("600x700")
-        a="{:}備忘錄"
-        a=a.format(self.Account)
-        self.win_main1.title(a)
-        
-        #使用者關閉視窗觸發的事件（第一個刪除視窗，第二個為函式名，即過程）
-        self.win_main1.protocol('WM_DELETE_WINDOW',lambda:self.CloseWin(self.win_main1))
-        canvas_width = 1000
-        canvas_height =1000
-        canvas = tk.Canvas(self.win_main1, 
-        width=canvas_width, 
-        height=canvas_height)
-        canvas.pack()
-        #背景
-        canvas.create_image(300,350, image=self.photo_備忘錄)
-        def 日歷1():
-            self.openFrame2()
-            self.win_main1.destroy()
-        def 管家1():
-            self.openFrame3()
-            self.win_main1.destroy()
-        but_1=tk.Button(self.win_main1,image=self.photo_筆記)
-        but_1.place(x=40,y=570)
-        but_2=tk.Button(self.win_main1,image=self.photo_日歷, command=日歷1)
-        but_2.place(x=170,y=570)
-        but_3=tk.Button(self.win_main1,image=self.photo_管家, command=管家1)
-        but_3.place(x=430,y=570)
-
-
-    #----------------------------------------------------------------------
-    def openFrame2(self):
-        """"""
-        #行事曆
-        self.hide()
-        self.win_main2 = tk.Toplevel()
-        left=(self.win_main2.winfo_screenwidth()-600)//2
-        top=(self.win_main2.winfo_screenheight()-700)//2
-        self.win_main2.geometry("{:}x{:}+{:}+{:}".format(600,700,left,top))
-        a="{:}行事曆"
-        a=a.format(self.Account)
-        self.win_main2.title(a)
-        
-        #使用者關閉視窗觸發的事件（第一個刪除視窗，第二個為函式名，即過程）
-        self.win_main2.protocol('WM_DELETE_WINDOW',lambda:self.CloseWin(self.win_main2))
-
-        canvas_width = 1000
-        canvas_height =1000
-        canvas = tk.Canvas(self.win_main2, 
-        width=canvas_width, 
-        height=canvas_height)
-        canvas.pack()
-        #背景
-        canvas.create_image(300,350, image=self.photo_行事曆)
-        def 筆記1():
-            self.openFrame1()
-            self.win_main2.destroy()
-        def 管家1():
-            self.openFrame3()
-            self.win_main2.destroy()
-        but_1=tk.Button(self.win_main2,image=self.photo_筆記,command=筆記1)
-        but_1.place(x=40,y=570)
-        but_2=tk.Button(self.win_main2,image=self.photo_日歷)
-        but_2.place(x=170,y=570)
-        but_3=tk.Button(self.win_main2,image=self.photo_管家, command=管家1)
-        but_3.place(x=430,y=570)        
+  
     #----------------------------------------------------------------------
     def openFrame3(self):
         """"""
@@ -519,29 +453,27 @@ class MyApp(object):
         canvas.pack()
         #背景
         canvas.create_image(300,350, image=self.photo_生活小助手)
-        def 筆記1():
-            self.openFrame1()
-            self.win_main3.destroy()
-        def 日歷1():
-            self.openFrame2()
-            self.win_main3.destroy()
-
-        but_1=tk.Button(self.win_main3,image=self.photo_筆記,command=筆記1)
-        but_1.place(x=40,y=570)
-        but_2=tk.Button(self.win_main3,image=self.photo_日歷, command=日歷1)
-        but_2.place(x=170,y=570)
-        but_3=tk.Button(self.win_main3,image=self.photo_管家)
-        but_3.place(x=430,y=570)      
-
-        but_weather=tk.Button(self.win_main3,image=self.photo_weather,command=lambda:weatherMyApp())
+        def weather():
+            BotSpeak.speak("現在進入的是天氣預報介面") 
+            Myweather()
+        def invoice():
+            BotSpeak.speak("現在進入的是兌獎查詢介面") 
+            invoiceMyApp()
+        def Foreign():
+            BotSpeak.speak("現在進入的是匯率轉換介面")
+            MyForeignExchange()
+        def requests():
+            BotSpeak.speak("現在進入的是星座運勢介面")
+            Myrequests()
+        but_weather=tk.Button(self.win_main3,image=self.photo_weather,command=weather)
         but_weather.place(x=44,y=5)
-        but_tick=tk.Button(self.win_main3,image=self.photo_tick,command=lambda:invoiceMyApp())
+        but_tick=tk.Button(self.win_main3,image=self.photo_tick,command=invoice)
         but_tick.place(x=310,y=295)
-        but_money=tk.Button(self.win_main3,image=self.photo_money,command=lambda:ForeignMyApp())
+        but_money=tk.Button(self.win_main3,image=self.photo_money,command=Foreign)
         but_money.place(x=44,y=295)
-        but_start=tk.Button(self.win_main3,image=self.photo_start,command=lambda:Myrequests())
+        but_start=tk.Button(self.win_main3,image=self.photo_start,command=requests)
         but_start.place(x=310,y=2)
-            
+        BotSpeak.speak("現在進入的是生活小助手介面 請點選個別按鈕進入相對應的介面")     
     #----------------------------------------------------------------------
     def onCloseOtherFrame(self, otherFrame):
         """"""

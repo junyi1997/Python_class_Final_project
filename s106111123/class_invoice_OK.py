@@ -1,10 +1,6 @@
 # -*- coding: utf-8 -*-
 import tkinter as tk
 import datetime
-from PIL import Image,ImageTk
-import firebase_admin
-from firebase_admin import credentials
-from firebase_admin import firestore
 import requests #產生HTTP的請求
 from bs4 import BeautifulSoup
 
@@ -13,15 +9,9 @@ class invoiceMyApp(object):
     """"""
     #----------------------------------------------------------------------
     def __init__(self):
-        
-        self.win = tk.Tk()
-        self.win.geometry("100x100")
         self.month=""
         self.t="微軟正黑體"
-        """Constructor"""
-        self.win.title("Main frame")
-        #圖片呼叫
-        self.win.title("PDMS_開始畫面")
+        """Constructor"""        
         #取月份
         self.now_time = datetime.datetime.now()
         self.now_time =str(self.now_time).split("-")
@@ -47,8 +37,27 @@ class invoiceMyApp(object):
           "領獎注意事項":"1.領獎期間自108年4月6日起至108年7月5日止，中獎人請於領獎期間攜帶國民身分證(非本國國籍人士得以護照、居留證或內政部移民署核發入出境許可證等替代)及中獎統一發票，依代發獎金單位公告之兌獎營業時間臨櫃兌領，逾期不得領獎。\n2.統一發票未依規定載明金額者，不得領獎。 \n3.統一發票買受人為政府機關、公營事業、公立學校、部隊及營業人者，不得領獎。 \n4.中四獎(含)以上者，依規定應由發獎單位扣繳20﹪所得稅款。 \n5.中五獎(含)以上者，依規定應繳納0.4%印花稅款。 \n6.中獎之統一發票，每張按其最高中獎獎別限領1 個獎金。 \n7.詳細領獎規定，請查閱「統一發票給獎辦法」。若有疑義，請洽財金公司客服專線：4128282(手機請撥：02-4128282)，或至財金公司網站查詢。"
         }
         self.my_main()
-        self.openFrame()
-        self.win.mainloop()
+        
+        self.wnd=tk.Toplevel()
+        self.centerwin(self.wnd,600,400)
+#        self.wnd.geometry("600x400")
+        self.wnd.title("發票兌獎")
+        self.wnd.resizable(False,False)
+        label_title=tk.Label(self.wnd, text="發票兌獎", width=8, height=1, fg="#5b00ae", font=(self.t,30))
+        label_title.place(x=10,y=15)
+        #-----------------------------------------------------
+        self.label_month=tk.Label(self.wnd, text=self.mmonth, bg="#CCCCFF", font=(self.t, 14))
+        self.label_month.place(x = 50, y = 90, width=500, height=50)#, 'bold'
+        self.label_SpecialA=tk.Label(self.wnd, text=self.SpecialAA, bg="#CCCCFF", font=(self.t, 14))#, height=2, width=100
+        self.label_SpecialA.place(x = 50, y = 150, width=500, height=50)#, 'bold'
+        self.label_SpecialB=tk.Label(self.wnd, text=self.SpecialBB, bg="#CCCCFF", font=(self.t, 14))#, height=2, width=100
+        self.label_SpecialB.place(x = 50, y = 210, width=500, height=50)#, 'bold'
+        self.label_First=tk.Label(self.wnd, text=self.Firstt, bg="#CCCCFF", font=(self.t, 14))#, height=2, width=100
+        self.label_First.place(x = 50, y = 270, width=500, height=50)#, 'bold'
+        self.label_Add=tk.Label(self.wnd, text=self.aadd, bg="#CCCCFF", font=(self.t, 14))#, height=2, width=100
+        self.label_Add.place(x = 50, y = 330, width=500, height=50)#, 'bold'
+
+        self.wnd.mainloop()
     def my_main(self):
         self.r=requests.get('https://www.etax.nat.gov.tw/etw-main/web/ETW183W2_'+self.url+'/')
         self.invoice_Data()
@@ -83,47 +92,7 @@ class invoiceMyApp(object):
         self.left = (self.wnd.winfo_screenwidth()-win_w)//2
         self.top = (self.wnd.winfo_screenheight()-win_h)//2
         self.wnd.geometry("{:}x{:}+{:}+{:}".format(win_w,win_h,self.left,self.top))
-        
-    #----------------------------------------------------------------------
-    def hide(self):
-        """"""
-        self.win.withdraw()
-    #----------------------------------------------------------------------
-    def openFrame(self):
-        """"""
-        self.hide()
-        self.wnd=tk.Toplevel()
-        self.centerwin(self.wnd,600,400)
-#        self.wnd.geometry("600x400")
-        self.wnd.title("發票兌獎")
-        self.wnd.resizable(False,False)
-        label_title=tk.Label(self.wnd, text="發票兌獎", width=8, height=1, fg="#5b00ae", font=(self.t,30))
-        label_title.place(x=10,y=15)
-        #-----------------------------------------------------
-        self.label_month=tk.Label(self.wnd, text=self.mmonth, bg="#CCCCFF", font=(self.t, 14))
-        self.label_month.place(x = 50, y = 90, width=500, height=50)#, 'bold'
-        self.label_SpecialA=tk.Label(self.wnd, text=self.SpecialAA, bg="#CCCCFF", font=(self.t, 14))#, height=2, width=100
-        self.label_SpecialA.place(x = 50, y = 150, width=500, height=50)#, 'bold'
-        self.label_SpecialB=tk.Label(self.wnd, text=self.SpecialBB, bg="#CCCCFF", font=(self.t, 14))#, height=2, width=100
-        self.label_SpecialB.place(x = 50, y = 210, width=500, height=50)#, 'bold'
-        self.label_First=tk.Label(self.wnd, text=self.Firstt, bg="#CCCCFF", font=(self.t, 14))#, height=2, width=100
-        self.label_First.place(x = 50, y = 270, width=500, height=50)#, 'bold'
-        self.label_Add=tk.Label(self.wnd, text=self.aadd, bg="#CCCCFF", font=(self.t, 14))#, height=2, width=100
-        self.label_Add.place(x = 50, y = 330, width=500, height=50)#, 'bold'
-        
-        #---------------------------------------------------------------
 
-    #----------------------------------------------------------------------
-    def onCloseOtherFrame(self, otherFrame):
-        """"""
-        self.a=0
-        otherFrame.destroy()
-        self.show()
-    #----------------------------------------------------------------------
-    def show(self):
-        """"""
-        self.win.update()
-        self.win.deiconify()
 #----------------------------------------------------------------------
 if __name__ == "__main__":
     app = invoiceMyApp() 
