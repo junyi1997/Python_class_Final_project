@@ -8,6 +8,7 @@ from s106111123.class_invoice_OK import invoiceMyApp
 from s106111123.class_weather_OK import Myweather
 from s106111123.class_requests_OK import Myrequests
 from s106111142.memo import Login
+import date
 import face_pyhon.face as face
 ########################################################################
 class MyApp(object):
@@ -18,7 +19,7 @@ class MyApp(object):
         """Constructor"""
         self.win = tk.Tk()
         self.win.geometry("600x800")
-        self.win.title("PDMS_開始畫面")#定義標題名稱
+        self.win.title("Keeping_開始畫面")#定義標題名稱
         left=(self.win.winfo_screenwidth()-600)//2#指定視窗置中
         top=(self.win.winfo_screenheight()-800)//2
         self.win.geometry("{:}x{:}+{:}+{:}".format(600,800,left,top))
@@ -36,6 +37,10 @@ class MyApp(object):
         self.photo_tick=tk.PhotoImage(file=r"./image/兌獎查詢.png")
         self.photo_money=tk.PhotoImage(file=r"./image/匯率換算.png")
         self.photo_start=tk.PhotoImage(file=r"./image/星座運勢.png")
+        self.photo_使用說明=tk.PhotoImage(file=r"./image/使用說明_背.png")
+        self.photo_喇叭=tk.PhotoImage(file=r"./image/喇叭.png")
+        
+        
         
         canvas_width = 1000#新增一個畫布
         canvas_height =1000
@@ -45,15 +50,15 @@ class MyApp(object):
         canvas.pack()
         #背景
         canvas.create_image(300,400, image=self.photo_background)#將背景貼到畫布上
-        '''
+        
         #選擇使用說明
-        but=tk.Button(win,text='觀看使用說明',font= ('Noto Sans Mono CJK TC Regular',30),fg='white',bg='magenta', command=self.openFrame) 
-        but.place(x=12,y=330,height=60)
-        '''
+        but=tk.Button(self.win,image=self.photo_使用說明, command=self.openFrame) 
+        but.place(x=410,y=10)
+        
         #進入登入畫面
-        but_Log=tk.Button(self.win,image=self.photo_Login, command=lambda:self.password()) 
+        but_Log=tk.Button(self.win,image=self.photo_Login, command=self.password) 
         but_Log.place(x=200,y=570)
-        BotSpeak.speak("歡迎來到PDMS個人資料管理系統  請點選下方按鍵登入")
+        BotSpeak.speak("歡迎來到KEEPING個人資料管理系統  請點選下方按鍵登入")
         self.win.mainloop()
         BotSpeak.speak("掰掰") 
     #----------------------------------------------------------------------
@@ -82,8 +87,8 @@ class MyApp(object):
                     Login()
                     
                 elif var.get()=="行事曆":
-                    pass
-                    
+                    date()
+#                    pass
                 elif var.get()=="生活小助手":
                     self.openFrame3() 
                     
@@ -268,7 +273,7 @@ class MyApp(object):
             usrs_info = pickle.load(usr_file)
         if self.Account in usrs_info:
 #            tk.messagebox.showinfo(title='歡迎', message='歡迎來到PDMS！ ' + self.Account)
-            msg="歡迎來到PDMS{:}".format(self.Account)
+            msg="歡迎來到KEEPING{:}".format(self.Account)
             BotSpeak.speak(msg) 
             self.win_pw.destroy()              
             self.chooseclear()
@@ -320,7 +325,7 @@ class MyApp(object):
                 if usr_pwd == usrs_info[usr_name]:
                     self.Account=usr_name
 #                    tk.messagebox.showinfo(title='歡迎', message='歡迎來到PDMS！ ' + usr_name)
-                    msg="歡迎來到PDMS！ {:}".format(str(usr_name))
+                    msg="歡迎來到KEEPING{:}".format(str(usr_name))
                     BotSpeak.speak(msg)
                     #cleardata = tk.messagebox.askyesno('Welcome',
                     #                '是否要清空資料庫？')
@@ -402,6 +407,90 @@ class MyApp(object):
     
     def closeWindow(self,myclosewindow):
         self.onCloseOtherFrame(myclosewindow)
+        
+    def close使用說明(self,win):
+        win.destroy()
+        self.openFrame()
+        
+    def spaekHowToUse(self,tit):
+        a="{:}_使用說明書.txt".format(tit)
+        with open (a,"r",encoding="UTF-8") as fd:
+            data=fd.read()
+            BotSpeak.speak(data)
+    #----------------------------------------------------------------------
+    def openFrame01(self):
+
+        """"""
+        self.hide()
+        self.win_HOW01 = tk.Toplevel()
+        #使用者關閉視窗觸發的事件（第一個刪除視窗，第二個為函式名，即過程）
+        self.win_HOW01.protocol('WM_DELETE_WINDOW',lambda:self.close使用說明(self.win_HOW01))
+        #self.win_HOW01.attributes("-fullscreen", True)
+        left=(self.win_HOW01.winfo_screenwidth()-600)//2
+        top=(self.win_HOW01.winfo_screenheight()-700)//2
+        self.win_HOW01.geometry("{:}x{:}+{:}+{:}".format(600,700,left,top))
+        self.win_HOW01.title("備忘錄")
+        self.win_HOW01.photo_background=tk.PhotoImage(file=r"./image/memo使用說明.png")
+        canvas_width = 600
+        canvas_height =700
+        canvas = tk.Canvas(self.win_HOW01, 
+        width=canvas_width, 
+        height=canvas_height)
+        canvas.pack()
+        #背景
+        canvas.create_image(300,350, image=self.win_HOW01.photo_background)
+        
+        btn= tk.Button(self.win_HOW01,image=self.photo_喇叭,command=lambda:self.spaekHowToUse("備忘錄"))
+        btn.place(x=505,y=630)
+     #----------------------------------------------------------------------
+    def openFrame02(self):
+
+        """"""
+        self.hide()
+        self.win_HOW02 = tk.Toplevel()
+        #使用者關閉視窗觸發的事件（第一個刪除視窗，第二個為函式名，即過程）
+        self.win_HOW02.protocol('WM_DELETE_WINDOW',lambda:self.close使用說明(self.win_HOW02))
+        #self.win_HOW02.attributes("-fullscreen", True)
+        left=(self.win_HOW02.winfo_screenwidth()-600)//2
+        top=(self.win_HOW02.winfo_screenheight()-700)//2
+        self.win_HOW02.geometry("{:}x{:}+{:}+{:}".format(600,700,left,top))
+        self.win_HOW02.title("生活小助手")
+        self.win_HOW02.photo_background=tk.PhotoImage(file=r"./image/生活小助手使用說明.png")
+        canvas_width = 600
+        canvas_height =700
+        canvas = tk.Canvas(self.win_HOW02, 
+        width=canvas_width, 
+        height=canvas_height)
+        canvas.pack()
+        #背景
+        canvas.create_image(300,350, image=self.win_HOW02.photo_background)
+        btn= tk.Button(self.win_HOW02,image=self.photo_喇叭,command=lambda:self.spaekHowToUse("生活小幫手"))
+        btn.place(x=505,y=630)
+     #----------------------------------------------------------------------
+    def openFrame03(self):
+
+        """"""
+        self.hide()
+        self.win_HOW03 = tk.Toplevel()
+        #使用者關閉視窗觸發的事件（第一個刪除視窗，第二個為函式名，即過程）
+        self.win_HOW03.protocol('WM_DELETE_WINDOW',lambda:self.close使用說明(self.win_HOW03))
+        #self.win_HOW03.attributes("-fullscreen", True)
+        left=(self.win_HOW03.winfo_screenwidth()-600)//2
+        top=(self.win_HOW03.winfo_screenheight()-700)//2
+        self.win_HOW03.geometry("{:}x{:}+{:}+{:}".format(600,700,left,top))
+        self.win_HOW03.title("使用說明")
+        self.win_HOW03.photo_background=tk.PhotoImage(file=r"./image/行事曆使用說明.png")
+        canvas_width = 600
+        canvas_height =700
+        canvas = tk.Canvas(self.win_HOW03, 
+        width=canvas_width, 
+        height=canvas_height)
+        canvas.pack()
+        #背景
+        canvas.create_image(300,350, image=self.win_HOW03.photo_background)
+        
+        btn= tk.Button(self.win_HOW03,image=self.photo_喇叭,command=lambda:self.spaekHowToUse("行事曆"))
+        btn.place(x=505,y=630)    
     #----------------------------------------------------------------------
     def openFrame(self):
 
@@ -411,23 +500,40 @@ class MyApp(object):
         #使用者關閉視窗觸發的事件（第一個刪除視窗，第二個為函式名，即過程）
         self.win_HOW.protocol('WM_DELETE_WINDOW',lambda:self.closeWindow(self.win_HOW))
         #win_HOW.attributes("-fullscreen", True)
-        left=(self.win_HOW.winfo_screenwidth()-800)//2
-        top=(self.win_HOW.winfo_screenheight()-470)//2
-        self.win_HOW.geometry("{:}x{:}+{:}+{:}".format(800,470,left,top))
-        self.win_HOW.title("使用說明")
-        self.win_HOW.photo_background=tk.PhotoImage(file=r"./image/123.png")
-        canvas_width = 800
-        canvas_height =530
+        left=(self.win_HOW.winfo_screenwidth()-600)//2
+        top=(self.win_HOW.winfo_screenheight()-700)//2
+        self.win_HOW.geometry("{:}x{:}+{:}+{:}".format(600,700,left,top))
+        self.win_HOW.title("行事曆")
+        self.win_HOW.photo_background=tk.PhotoImage(file=r"./image/背景.png")
+        canvas_width = 600
+        canvas_height =700
         canvas = tk.Canvas(self.win_HOW, 
         width=canvas_width, 
         height=canvas_height)
         canvas.pack()
         #背景
-        canvas.create_image(400,240, image=self.win_HOW.photo_background)
-
-        handler = lambda: self.onCloseOtherFrame(self.win_HOW)
-        btn = tk.Button(self.win_HOW, text="continue",command=handler,font= ('Noto Sans Mono CJK TC Regular',20),fg='white',bg='Maroon',width=8)
-        btn.place(x=330,y=380)
+        canvas.create_image(300,350, image=self.win_HOW.photo_background)
+        
+        def 備忘錄():
+            self.win_HOW.destroy()
+            self.openFrame01()
+        def 生活小助手():
+            self.win_HOW.destroy()
+            self.openFrame02()
+        def 記事本():
+            self.win_HOW.destroy()
+            self.openFrame03()
+        
+        btn01= tk.Button(self.win_HOW, text="備忘錄",font= ('Noto Sans Mono CJK TC Regular',30),fg='white',bg='Maroon',command=備忘錄)
+        btn01.place(x=220,y=100)
+        btn02= tk.Button(self.win_HOW, text="生活小助手",font= ('Noto Sans Mono CJK TC Regular',30),fg='white',bg='#0000FF',command=生活小助手)
+        btn02.place(x=180,y=250)
+        btn03= tk.Button(self.win_HOW, text="行事曆",font= ('Noto Sans Mono CJK TC Regular',30),fg='white',bg='#FF44AA',command=記事本)
+        btn03.place(x=220,y=400)
+        
+#        handler = lambda: self.onCloseOtherFrame(self.win_HOW)
+#        btn = tk.Button(self.win_HOW, text="continue",command=handler,font= ('Noto Sans Mono CJK TC Regular',20),fg='white',bg='Maroon',width=8)
+#        btn.place(x=330,y=380)
   
     #----------------------------------------------------------------------
     def openFrame3(self):
